@@ -176,7 +176,10 @@ function App() {
   const todayLog = appState.dailyLogs[todayKey]
   const todaySummary = profile && plan ? getTodaySummary(appState, profile, plan, todayKey) : null
   const currentWeightKg = profile ? getLatestWeightKg(appState, profile) : null
-  const energyHistory = profile && plan ? buildEnergyHistory(appState, profile, plan, selectedRange) : []
+  const energyHistory = useMemo(
+    () => (profile && plan ? buildEnergyHistory(appState, profile, plan, selectedRange) : []),
+    [appState, plan, profile, selectedRange],
+  )
   const historyThirtyDays = useMemo(
     () => (profile && plan ? buildEnergyHistory(appState, profile, plan, 30) : []),
     [appState, plan, profile],
