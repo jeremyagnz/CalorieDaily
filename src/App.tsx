@@ -165,7 +165,7 @@ const feetAndInchesToCm = (feet: number, inches: number) => (feet * 12 + inches)
 
 function App() {
   const [appState, setAppState] = useState<AppState>(() => loadAppState())
-  const [isEditingProfile, setIsEditingProfile] = useState(!loadAppState().profile)
+  const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [selectedRange, setSelectedRange] = useState<DateRange>(7)
   const [exerciseForm, setExerciseForm] = useState<ExerciseFormState>(defaultExerciseForm)
   const [weightEntryValue, setWeightEntryValue] = useState('')
@@ -177,6 +177,10 @@ function App() {
   const todaySummary = profile && plan ? getTodaySummary(appState, profile, plan, todayKey) : null
   const currentWeightKg = profile ? getLatestWeightKg(appState, profile) : null
   const energyHistory = profile && plan ? buildEnergyHistory(appState, profile, plan, selectedRange) : []
+  const historyThirtyDays = useMemo(
+    () => (profile && plan ? buildEnergyHistory(appState, profile, plan, 30) : []),
+    [appState, plan, profile],
+  )
   const weightTrend = profile ? buildWeightTrend(appState, profile, 30) : []
   const weightProgress = profile && currentWeightKg ? calculateWeightProgress(appState, profile, currentWeightKg) : null
 
@@ -709,7 +713,7 @@ function App() {
             </div>
           </div>
           <HistoryCalendar
-            history={buildEnergyHistory(appState, profile, plan, 30)}
+            history={historyThirtyDays}
             weightUnit={profile.preferredWeightUnit}
           />
         </div>
